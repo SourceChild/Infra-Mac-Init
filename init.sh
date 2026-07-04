@@ -51,6 +51,18 @@ OSVER="$(sw_vers -productVersion)"; BUILD="$(sw_vers -buildVersion)"
 IS_BETA=false; [[ "$BUILD" =~ [a-z]$ ]] && IS_BETA=true
 log "init on '${HOST}'  ($OSVER $BUILD$( $IS_BETA && printf ' — BETA'); remote session: ${REMOTE_SESSION})"
 
+# ---- 0. sudo up front -------------------------------------------------------
+# Homebrew's non-interactive installer checks for ALREADY-cached sudo (`sudo -n -v`)
+# and hard-fails if it isn't primed — so grab it once here (one password prompt) and
+# keep it alive through the long CLT wait + the Homebrew install. The Xcode-license
+# step also uses it. Without this, Homebrew dies with "Need sudo access on macOS".
+log "Requesting administrator (sudo) access up front…"
+sudo -v || die "This account needs administrator rights (sudo).
+      Make '$(id -un)' an Administrator (System Settings ▸ Users & Groups), then re-run this command."
+( while true; do sudo -n true; sleep 50; kill -0 "$$" 2>/dev/null || exit; done ) >/dev/null 2>&1 &
+SUDO_KEEPALIVE=$!
+trap 'kill "$SUDO_KEEPALIVE" 2>/dev/null || true' EXIT INT TERM
+
 # ---- 1. Command Line Tools (+ beta guard) -----------------------------------
 if ! /usr/bin/xcode-select -p >/dev/null 2>&1; then
   # On a beta OS, `xcode-select --install` can't fetch CLT — the wait loop would hang forever.
@@ -186,7 +198,7 @@ fi
 if [ -x "$TARGET_DIR/install.sh" ]; then
   case "$(ask 'Install apps & services now (install.sh)? [Y/n]: ')" in
     n|N|no|NO) log "Clone ready. Run later:  cd $TARGET_DIR && ./install.sh" ;;
-    *) log "Handing off to the installer…"; exec "$TARGET_DIR/install.sh" ;;
+    *) log "Handing off to the installer…"; kill "$SUDO_KEEPALIVE" 2>/dev/null || true; exec "$TARGET_DIR/install.sh" ;;
   esac
 else
   warn "No install.sh in the repo — clone is ready at ${TARGET_DIR}."
