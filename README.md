@@ -1,43 +1,48 @@
 # Infra-Mac-Init
 
-Prerequisite-free bootstrap scripts for a fresh Mac. **Public and generic on purpose** — these
-files carry no hostnames, IPs, usernames, app lists, or keys. All machine-specific configuration
-lives in a separate **private** repo that these scripts fetch *after* the machine authenticates
-with its own key.
+Public, **anonymous** first-touch bootstrap for a fresh Mac. Carries no hostnames, IPs, usernames,
+app lists, or keys — all real configuration lives in a separate **private** repo that `init.sh`
+fetches *after* the machine mints its own key and proves it's authorized.
 
-Two scripts, run **on the new Mac**, in Terminal:
+## Start here — one command on the new Mac
 
-## `init.sh` — get from bare metal to a cloned private config repo
+Open **Terminal** on the freshly-imaged Mac and run (pass your private config repo's SSH URL):
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/SourceChild/Infra-Mac-Init/main/init.sh \
   | bash -s -- git@github.com:<owner>/<private-config-repo>.git
 ```
 
-(Run with no argument and it prompts for the private repo URL.)
+Run with **no argument** and it prompts for the private repo URL instead. `curl | bash` needs no
+git — `init.sh` installs it (via Command Line Tools) first.
 
-It installs Command Line Tools + Homebrew (no git needed to start — `curl` only), mints a
-per-machine GitHub SSH key **`<hostname>-gh`** and registers it on GitHub interactively, then
-**verifies authorization**: if this GitHub account can read the private repo it clones it and hands
-off to the repo's installer; if it can't, it **halts and explains** (the owner hasn't shared the
-private repo with that account). On a *remote* session it can also mint a return-access key
-**`new-<hostname>-<operator>`**; run directly at the machine and no return key is created.
+## What `init.sh` does (bare minimum to reach the private repo)
 
-**Note on the GitHub key step:** adding a key with `gh` needs the `admin:public_key` scope. If `gh`
-doesn't have it, the script runs `gh auth refresh -s admin:public_key` (opens a browser); if `gh`
-isn't present/authed it falls back to printing the key for you to paste at
-`https://github.com/settings/ssh/new`.
+1. **Command Line Tools** — with a **beta-OS guard** (on a beta build, Apple doesn't serve public
+   CLT, so it stops with a link instead of hanging).
+2. **Accepts the Xcode license** — built in, so you never hit the license wall by hand.
+3. **Homebrew** (needed to install `gh`).
+4. **A per-machine GitHub SSH key `<hostname>-gh`** — generated on the machine and **registered on
+   GitHub** for you (via `gh`, or by paste). Private keys never leave the machine.
+5. **Authorization gate** — if this GitHub account can read the private repo it continues; if not it
+   **halts and explains** (the owner hasn't shared it with your account yet). Nothing else installs.
+6. On a **remote** session only, an optional return-access key `new-<hostname>-<operator>`.
+7. **Clones** the private repo → `~/dev/infra/ansible`.
+8. Offers to apply your macOS **settings** (`provision.sh`) — decline with `n`.
+9. Hands off to the private **installer** (`install.sh`) for apps & services — decline with `n`.
 
-## `provision.sh` — apply macOS system/user preferences
+Steps are idempotent and recorded under `~/.infra-mac/`, so re-running skips what's done. For
+unattended runs, opt out of the tail with `INFRA_SKIP_PROVISION=1` and/or `INFRA_SKIP_INSTALL=1`.
 
-```bash
-curl -fsSL https://raw.githubusercontent.com/SourceChild/Infra-Mac-Init/main/provision.sh | bash
-```
+> **GitHub key scope:** adding a key with `gh` needs `admin:public_key`. `init.sh` requests it
+> (`gh auth login`/`refresh` opens a browser); if `gh` can't, it prints the key to paste at
+> `https://github.com/settings/ssh/new`.
 
-Applies a baseline of macOS `defaults`/system settings (Dock, Finder, keyboard, trackpad, screenshots,
-security, etc.) with a **default set** plus **selectable option groups**. The concrete values are
-derived from a known-good clean machine — see the header of `provision.sh` for how to (re)capture a
-baseline. Safe to re-run (idempotent); logs what it changed.
+## `provision.sh` — pointer only
+
+macOS preferences are personal, so they don't live here. They live as `SETTINGS.md` in your private
+repo, applied by *that* repo's `provision.sh` (which `init.sh` already offers to run). This file just
+tells you that. It has **zero logic on purpose** so it can never drift.
 
 ---
 
