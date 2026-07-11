@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # =============================================================================
-# Infra-Mac-Init · provision.sh — POINTER ONLY (intentionally zero logic).
+# infra-mac-init · provision.sh — POINTER ONLY (intentionally zero logic).
 #
 # macOS preferences are data-driven and PERSONAL, so they don't live in this public
 # repo. They live in your PRIVATE config repo as an editable table, SETTINGS.md,

@@ -1,4 +1,4 @@
-# Infra-Mac-Init
+# infra-mac-init
 
 Public, **anonymous** first-touch bootstrap for a fresh Mac. Carries no hostnames, IPs, usernames,
 app lists, or keys — all real configuration lives in a separate **private** repo that `init.sh`
@@ -9,7 +9,7 @@ fetches *after* the machine mints its own key and proves it's authorized.
 Open **Terminal** on the freshly-imaged Mac and run (pass your private config repo's SSH URL):
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/SourceChild/Infra-Mac-Init/main/init.sh \
+curl -fsSL https://raw.githubusercontent.com/SourceChild/infra-mac-init/main/init.sh \
   | bash -s -- git@github.com:<owner>/<private-config-repo>.git
 ```
 

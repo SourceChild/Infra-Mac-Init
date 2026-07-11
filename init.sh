@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 # =============================================================================
-# Infra-Mac-Init · init.sh — anonymous first-touch bootstrapper for a fresh Mac.
+# infra-mac-init · init.sh — anonymous first-touch bootstrapper for a fresh Mac.
 #
 # BARE MINIMUM to get a bare machine ready to reach your PRIVATE config repo, and
 # nothing more. Contains NO personal / host / app / repo data — the only per-user
 # value (the private repo URL) is passed in or prompted, never baked in.
 #
 #   Run ON the new machine, in Terminal:
-#     curl -fsSL https://raw.githubusercontent.com/SourceChild/Infra-Mac-Init/main/init.sh \
+#     curl -fsSL https://raw.githubusercontent.com/SourceChild/infra-mac-init/main/init.sh \
 #       | bash -s -- git@github.com:<owner>/<private-config-repo>.git
 #   …or run with no argument and it prompts for the private repo URL.
 #
