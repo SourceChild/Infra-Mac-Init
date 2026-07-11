@@ -8,8 +8,8 @@
 #
 #   Run ON the new machine, in Terminal:
 #     curl -fsSL https://raw.githubusercontent.com/SourceChild/infra-mac-init/main/init.sh \
-#       | bash -s -- git@github.com:<owner>/<private-config-repo>.git
-#   …or run with no argument and it prompts for the private repo URL.
+#       | bash -s -- git@github.com:SourceChild/infra-mac-deploy.git
+#   …or run with no argument: it defaults to SourceChild/infra-mac-deploy (override by passing a URL).
 #
 # What it does, in order (each step is idempotent + recorded under ~/.infra-mac/):
 #   1. Command Line Tools     (gives git; curl-only to get here)   ── + BETA guard
@@ -45,8 +45,8 @@ mark()   { printf '%s\t%s\t%s\n' "$(date '+%Y-%m-%dT%H:%M:%S')" "$(_host)" "$SCR
 HOST="$(_host)"
 GH_KEY="$HOME/.ssh/${HOST}-gh"                        # naming: <hostname>-gh
 REMOTE_SESSION=false; [ -n "${SSH_CONNECTION:-}" ] && REMOTE_SESSION=true
-PRIVATE_REPO="${1:-}"
-TARGET_DIR="${2:-$HOME/dev/infra/ansible}"           # where the private repo lands
+PRIVATE_REPO="${1:-git@github.com:SourceChild/infra-mac-deploy.git}"   # concrete default; pass a URL to override
+TARGET_DIR="${2:-$HOME/dev/infra-mac-deploy}"        # where the private repo lands
 OSVER="$(sw_vers -productVersion)"; BUILD="$(sw_vers -buildVersion)"
 IS_BETA=false; [[ "$BUILD" =~ [a-z]$ ]] && IS_BETA=true
 log "init on '${HOST}'  ($OSVER $BUILD$( $IS_BETA && printf ' — BETA'); remote session: ${REMOTE_SESSION})"

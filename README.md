@@ -10,11 +10,11 @@ Open **Terminal** on the freshly-imaged Mac and run (pass your private config re
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/SourceChild/infra-mac-init/main/init.sh \
-  | bash -s -- git@github.com:<owner>/<private-config-repo>.git
+  | bash -s -- git@github.com:SourceChild/infra-mac-deploy.git
 ```
 
-Run with **no argument** and it prompts for the private repo URL instead. `curl | bash` needs no
-git — `init.sh` installs it (via Command Line Tools) first.
+Run with **no argument** and it defaults to `SourceChild/infra-mac-deploy` (pass a different SSH URL to
+override). `curl | bash` needs no git — `init.sh` installs it (via Command Line Tools) first.
 
 ## What `init.sh` does (bare minimum to reach the private repo)
 
