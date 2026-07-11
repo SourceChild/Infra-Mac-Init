@@ -1,8 +1,9 @@
 # infra-mac-init
 
-Public, **anonymous** first-touch bootstrap for a fresh Mac. Carries no hostnames, IPs, usernames,
-app lists, or keys — all real configuration lives in a separate **private** repo that `init.sh`
-fetches *after* the machine mints its own key and proves it's authorized.
+Public first-touch bootstrap for a fresh Mac. Carries **no secrets** — no keys, passwords, hostnames,
+IPs, or app lists; the only identifiers are the public GitHub owner + config-repo name (a convenience
+default, overridable by passing a URL). All real configuration lives in a separate **private** repo that
+`init.sh` fetches *after* the machine mints its own key and proves it's authorized.
 
 ## Start here — one command on the new Mac
 
