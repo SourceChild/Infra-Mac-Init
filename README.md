@@ -27,7 +27,7 @@ override). `curl | bash` needs no git — `init.sh` installs it (via Command Lin
 5. **Authorization gate** — if this GitHub account can read the private repo it continues; if not it
    **halts and explains** (the owner hasn't shared it with your account yet). Nothing else installs.
 6. On a **remote** session only, an optional return-access key `new-<hostname>-<operator>`.
-7. **Clones** the private repo → `~/dev/infra/ansible`.
+7. **Clones** the private repo → `~/dev/infra-mac-deploy`.
 8. Offers to apply your macOS **settings** (`provision.sh`) — decline with `n`.
 9. Hands off to the private **installer** (`install.sh`) for apps & services — decline with `n`.
 
